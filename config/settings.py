@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Created apps
+    "mailing_manager"
 ]
 
 MIDDLEWARE = [
