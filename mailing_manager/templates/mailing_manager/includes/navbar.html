@@ -1,0 +1,63 @@
+<nav class="navbar bg-dark border-bottom border-body" data-bs-theme="dark">
+    <div class="container-fluid">
+        <!--header-->
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Менеджер рассылок</a>
+        <!--btn group-->
+        <div class="btn-group">
+            <!--user menu-->
+            <button type="button" class="btn btn-dark dropdown-toggle me-2" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" alt="" width="32" height="32" class="rounded-circle me-2">
+                {% endif %}
+                {% if user.is_authenticated %}
+                {{ user.username }}
+                {% else %}
+                Авторизация
+                {% endif %}
+            </button>
+            {% if user.is_authenticated %}
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow">
+                <li>
+                    <a class="dropdown-item" href="#">
+                        Профиль
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <form method="post" action="#" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item">
+                            Выйти
+                        </button>
+                    </form>
+                </li>
+            </ul>
+            {% else %}
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow">
+                <li>
+                    <a class="dropdown-item" href="#">
+                        Регистрация
+                    </a>
+                </li>
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li>
+                    <a class="dropdown-item" href="#">
+                        Вход
+                    </a>
+                </li>
+            </ul>
+            {% endif %}
+            <!--sidebar menu-->
+            <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</nav>

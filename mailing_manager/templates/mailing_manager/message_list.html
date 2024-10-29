@@ -1,0 +1,41 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Список сообщений{% endblock %}
+
+{% block content %}
+
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+    <!--control button-->
+    <div
+        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Список сообщений</h1>
+        <a class="btn btn-primary" href="{% url 'mailing_manager:message_add' %}">
+            Создать сообщение
+        </a>
+    </div>
+    <!--messages list-->
+    <div class="table-responsive small">
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">Тема</th>
+                    <th scope="col">Текст сообщения</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for message in message_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'mailing_manager:message_detail' message.pk %}" class="link-primary">
+                            {{ message.theme }}
+                        </a>
+                    </td>
+                    <td>{{ message.text_message|truncatechars:30 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+{% endblock %}
