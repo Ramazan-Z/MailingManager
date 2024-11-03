@@ -35,6 +35,13 @@ class CustomUser(AbstractUser):
         null=True,
         help_text="Введите страну",
     )
+    # Токен подтверждения почты
+    token: models.Field = models.CharField(
+        max_length=100,
+        verbose_name="Токен",
+        blank=True,
+        null=True,
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
