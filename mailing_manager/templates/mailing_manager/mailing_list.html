@@ -4,38 +4,35 @@
 
 {% block content %}
 
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <!--control button-->
-    <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Список рассылок</h1>
-        <a class="btn btn-primary" href="{% url 'mailing_manager:mailing_add' %}">
-            Создать рассылку
-        </a>
-    </div>
-    <!--mailings list-->
-    <div class="table-responsive small">
-        <table class="table table-striped table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">Сообщение</th>
-                    <th scope="col">Получатели</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for mailing in mailing_list %}
-                <tr>
-                    <td>
-                        <a href="{% url 'mailing_manager:mailing_detail' mailing.pk %}" class="link-primary">
-                            {{ mailing.message }}
-                        </a>
-                    </td>
-                    <td>{{ mailing.clients }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</main>
+<!--control button-->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Список рассылок</h1>
+    <a class="btn btn-primary" href="{% url 'mailing_manager:mailing_add' %}">
+        Создать рассылку
+    </a>
+</div>
+<!--mailings list-->
+<div class="table-responsive small">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Сообщение</th>
+                <th scope="col">Получатели</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mailing in mailing_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'mailing_manager:mailing_detail' mailing.pk %}" class="link-primary">
+                        {{ mailing.message }}
+                    </a>
+                </td>
+                <td>{{ mailing.clients }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

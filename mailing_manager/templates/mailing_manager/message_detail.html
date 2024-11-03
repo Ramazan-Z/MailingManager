@@ -4,59 +4,56 @@
 
 {% block content %}
 
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <!--control buttons-->
-    <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h3 class="h2">Информация о сообщении</h3>
-        <div class="btn-group me-2">
-            <a class="btn btn-primary" href="{% url 'mailing_manager:message_edit'  message.pk %}">
-                Редактировать
-            </a>
-            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Удалить
-            </button>
-            <a href="{% url 'mailing_manager:messages_list' %}" class="btn btn-secondary">
-                Назад
-            </a>
-        </div>
+<!--control buttons-->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h3 class="h2">Информация о сообщении</h3>
+    <div class="btn-group me-2">
+        <a class="btn btn-primary" href="{% url 'mailing_manager:message_edit'  message.pk %}">
+            Редактировать
+        </a>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#DeleteModal">
+            Удалить
+        </button>
+        <a href="{% url 'mailing_manager:messages_list' %}" class="btn btn-secondary">
+            Назад
+        </a>
     </div>
-    <!--modal-->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Удаление клиента</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Вы уверены, что хотите удалить "{{ message.theme }}"?</p>
-                </div>
-                <div class="modal-footer">
-                    <form method="post" action="{% url 'mailing_manager:message_delete' message.pk %}">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Удалить</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                    </form>
-                </div>
+</div>
+<!--modal-->
+<div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="DeleteModalLabel">Удаление сообщения</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить "{{ message.theme }}"?</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{% url 'mailing_manager:message_delete' message.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                </form>
             </div>
         </div>
     </div>
-    <!--message info-->
-    <div class="table-responsive small">
-        <table class="table table-striped table-sm">
-            <tbody>
-                <tr>
-                    <td>Тема</td>
-                    <td>{{ message.theme }}</td>
-                </tr>
-                <tr>
-                    <td>Текст сообщения</td>
-                    <td>{{ message.text_message }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</main>
+</div>
+<!--message info-->
+<div class="table-responsive small">
+    <table class="table table-striped table-sm">
+        <tbody>
+            <tr>
+                <td>Тема</td>
+                <td>{{ message.theme }}</td>
+            </tr>
+            <tr>
+                <td>Текст сообщения</td>
+                <td>{{ message.text_message }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

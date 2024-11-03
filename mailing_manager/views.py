@@ -1,8 +1,14 @@
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from . import forms, models
+
+
+class HomeTemplateView(TemplateView):
+    """Контроллер домашней страницы"""
+
+    template_name = "mailing_manager/home.html"
 
 
 class ClientsListView(ListView):

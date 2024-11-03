@@ -4,40 +4,37 @@
 
 {% block content %}
 
-<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-    <!--control button-->
-    <div
-        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Список клиентов</h1>
-        <a class="btn btn-primary" href="{% url 'mailing_manager:client_add' %}">
-            Добавить клиента
-        </a>
-    </div>
-    <!--clients list-->
-    <div class="table-responsive small">
-        <table class="table table-striped table-sm">
-            <thead>
-                <tr>
-                    <th scope="col">Ф.И.О</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Коментарий</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for client in client_list %}
-                <tr>
-                    <td>
-                        <a href="{% url 'mailing_manager:client_detail' client.pk %}" class="link-primary">
-                            {{ client.full_name }}
-                        </a>
-                    </td>
-                    <td>{{ client.email }}</td>
-                    <td>{{ client.comments|truncatechars:30 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</main>
+<!--control button-->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Список клиентов</h1>
+    <a class="btn btn-primary" href="{% url 'mailing_manager:client_add' %}">
+        Добавить клиента
+    </a>
+</div>
+<!--clients list-->
+<div class="table-responsive small">
+    <table class="table table-striped table-sm">
+        <thead>
+            <tr>
+                <th scope="col">Ф.И.О</th>
+                <th scope="col">Email</th>
+                <th scope="col">Коментарий</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in client_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'mailing_manager:client_detail' client.pk %}" class="link-primary">
+                        {{ client.full_name }}
+                    </a>
+                </td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.comments|truncatechars:30 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}
