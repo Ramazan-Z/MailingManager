@@ -106,3 +106,32 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Модель пользователя
 AUTH_USER_MODEL = "users.CustomUser"
+
+# URL для перенаправления после успешного входа
+LOGIN_REDIRECT_URL = "mailing_manager:home"
+
+# URL для перенаправления после выхода из системы
+LOGOUT_REDIRECT_URL = "mailing_manager:home"
+
+# URL для перенаправления неавторизованных пользователей
+LOGIN_URL = "users:login"
+
+# Настройки почтового сервера
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = True if os.getenv("EMAIL_USE_TLS") == "True" else False
+EMAIL_USE_SSL = True if os.getenv("EMAIL_USE_SSL") == "True" else False
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Подключение Redis в качестве брокера в проект
+CACH_ENABLED = os.getenv("CACH_ENABLED", False) == "True"
+if CACH_ENABLED:
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": os.getenv("LOCATION"),
+        }
+    }

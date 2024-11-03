@@ -1,0 +1,32 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+
+{% load my_tag %}
+
+<!--user profile-->
+<div class="card-group mt-4">
+    <div class="card">
+        <img src="{{ user.avatar | media_filter }}" class="rounded-circle m-2" alt="avatar">
+        <div class="card-footer">
+            <a class="btn btn-primary" href="{% url 'users:edit' %}">Изменить профиль</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Мой профиль</h4>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Ник: {{ user.username }}</li>
+                <li class="list-group-item">Email: {{ user.email }}</li>
+                <li class="list-group-item">Имя: {{ user.first_name }}</li>
+                <li class="list-group-item">Фамилия: {{ user.last_name }}</li>
+                <li class="list-group-item">Телефон: {{ user.phone_number }}</li>
+                <li class="list-group-item">Страна: {{ user.country }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

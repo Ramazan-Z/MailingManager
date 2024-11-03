@@ -1,0 +1,22 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Востановление пароля{% endblock %}
+
+{% block content %}
+
+<div class="card mt-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Востановление пароля</h4>
+    </div>
+    <div class="card-body">
+        <p>Введите Email Вашего аккаунта</p>
+        <form method="post" class="form-floating">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Отправить</button>
+            <a href="{% url 'mailing_manager:home' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
