@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -6,15 +7,31 @@ class Client(models.Model):
 
     # Email
     email: models.Field = models.EmailField(
-        unique=True, verbose_name="Email клиента", help_text="Введите Email клиента"
+        unique=True,
+        verbose_name="Email клиента",
+        help_text="Введите Email клиента",
     )
     # Полное имя (Ф. И. О.)
     full_name: models.Field = models.CharField(
-        max_length=255, verbose_name="Ф. И. О. клиента", help_text="Введите Ф. И. О. клиента"
+        max_length=255,
+        verbose_name="Ф. И. О. клиента",
+        help_text="Введите Ф. И. О. клиента",
     )
     # Коментарий
     comments: models.Field = models.TextField(
-        verbose_name="Коментарий", blank=True, null=True, help_text="Введите коментарий"
+        blank=True,
+        null=True,
+        verbose_name="Коментарий",
+        help_text="Введите коментарий",
+    )
+    # Владелец
+    owner: models.Field = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="Владелец",
+        related_name="clients",
     )
 
     def __str__(self) -> str:
@@ -28,6 +45,7 @@ class Client(models.Model):
         verbose_name = "Клиент"  # Отображаемое имя в ед. числе
         verbose_name_plural = "Клиенты"  # Отображаемое имя во мн. числе
         ordering = ["full_name"]  # Порядок сортировки
+        permissions = [("can_view_clients", "Может просматривать чужих клиентов")]
 
 
 class Message(models.Model):
@@ -35,10 +53,24 @@ class Message(models.Model):
 
     # Тема сообщения
     theme: models.Field = models.CharField(
-        max_length=255, verbose_name="Тема cообщения", help_text="Введите тему сообщения"
+        max_length=255,
+        verbose_name="Тема cообщения",
+        help_text="Введите тему сообщения",
     )
     # Текст сообщения
-    text_message: models.Field = models.TextField(verbose_name="Текст сообщения", help_text="Введите текст сообщения")
+    text_message: models.Field = models.TextField(
+        verbose_name="Текст сообщения",
+        help_text="Введите текст сообщения",
+    )
+    # Владелец
+    owner: models.Field = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="Владелец",
+        related_name="messages",
+    )
 
     def __str__(self) -> str:
         """Строковое представление сообщения"""
@@ -51,6 +83,7 @@ class Message(models.Model):
         verbose_name = "Сообщение"  # Отображаемое имя в ед. числе
         verbose_name_plural = "Сообщения"  # Отображаемое имя во мн. числе
         ordering = ["theme"]  # Порядок сортировки
+        permissions = [("can_view_message", "Может просматривать чужие сообщения")]
 
 
 class Mailing(models.Model):
@@ -65,24 +98,59 @@ class Mailing(models.Model):
 
     # Дата и время первой отправки
     date_first_message: models.Field = models.DateTimeField(
-        verbose_name="Дата и время первой отправки", blank=True, null=True
+        blank=True,
+        null=True,
+        verbose_name="Дата и время первой отправки",
+        help_text="Введите дату и время первой отправки",
     )
     # Дата и время окончания отправки
     date_end_message: models.Field = models.DateTimeField(
-        verbose_name="Дата и время окончания отправки", blank=True, null=True
+        blank=True,
+        null=True,
+        verbose_name="Дата и время окончания отправки",
+        help_text="Введите дату и время окончания отправки",
     )
     # Сообщение (ForeignKey)
-    message: models.Field = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="mailing_message")
+    message: models.Field = models.OneToOneField(
+        Message,
+        on_delete=models.CASCADE,
+        verbose_name="Сообщение",
+        help_text="Выберете связанное сообщение",
+        related_name="mailing_messages",
+    )
     # Получатели
-    clients: models.Field = models.ManyToManyField(Client, related_name="mailing_clients")
+    clients: models.Field = models.ManyToManyField(
+        Client,
+        verbose_name="Клиенты",
+        help_text="Выберете получателей рассылки",
+        related_name="mailing_clients",
+    )
     # Статус
     status: models.Field = models.CharField(
-        max_length=9, choices=STATUS_CHOICES, blank=True, default="created", verbose_name="Статус"
+        max_length=9,
+        choices=STATUS_CHOICES,
+        blank=True,
+        default="created",
+        verbose_name="Статус",
+    )
+    # Признак блокировки
+    is_blocked: models.Field = models.BooleanField(
+        default=False,
+        verbose_name="Блокировка",
+    )
+    # Владелец
+    owner: models.Field = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="Владелец",
+        related_name="mailings",
     )
 
     def __str__(self) -> str:
         """Строковое представление рассылки"""
-        return f"Mailing for the message: «{self.message}»"
+        return f"Рассылка для сообщения: «{self.message}»"
 
     class Meta:
         """Метаданные модели"""
@@ -91,6 +159,10 @@ class Mailing(models.Model):
         verbose_name = "Рассылка"  # Отображаемое имя в ед. числе
         verbose_name_plural = "Рассылки"  # Отображаемое имя во мн. числе
         ordering = ["date_first_message"]  # Порядок сортировки
+        permissions = [
+            ("can_view_mailing", "Может просматривать чужие рассылки"),
+            ("can_mailing_blocked", "Может блокировать рассылки"),
+        ]
 
 
 class MailingAttempt(models.Model):
@@ -103,13 +175,36 @@ class MailingAttempt(models.Model):
     ]
 
     # Дата и время попытки
-    date_attempt: models.Field = models.DateTimeField(auto_now_add=True)
+    date_attempt: models.Field = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата и время попытки",
+    )
     # Статус
-    status: models.Field = models.CharField(max_length=14, choices=STATUS_CHOICES, verbose_name="Статус")
+    status: models.Field = models.CharField(
+        max_length=14,
+        choices=STATUS_CHOICES,
+        verbose_name="Статус",
+    )
     # Ответ почтового сервера
-    server_response: models.Field = models.TextField(verbose_name="Ответ почтового сервера")
+    server_response: models.Field = models.TextField(
+        verbose_name="Ответ почтового сервера",
+    )
     # Рассылка (ForeignKey)
-    mailing: models.Field = models.ForeignKey(Mailing, on_delete=models.CASCADE, related_name="mailing_attempts")
+    mailing: models.Field = models.ForeignKey(
+        Mailing,
+        on_delete=models.CASCADE,
+        verbose_name="Рассылка",
+        related_name="mailing_attempts",
+    )
+    # Владелец
+    owner: models.Field = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        verbose_name="Владелец",
+        related_name="attemts",
+    )
 
     class Meta:
         """Метаданные модели"""
