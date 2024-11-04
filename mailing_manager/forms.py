@@ -1,71 +1,56 @@
 from typing import Any
 
 from django import forms
+from django.forms.fields import Field
+from django.forms.models import inlineformset_factory
 
-from .models import Client, Mailing, Message
+from mailing_manager.models import Client, Mailing, Message
 
 
-class ClientForm(forms.ModelForm):
+class BootstrapMixin:
+    """Класс-миксин для добавления стилей к формам"""
+
+    fields: dict[str, Field]
+
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        """Добавление стилей в инициализацию"""
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if isinstance(field, forms.BooleanField):
+                field.widget.attrs["class"] = "form-check-input"
+            elif "Password" not in str(field.label):
+                field.widget.attrs["class"] = "form-control"
+                field.widget.attrs["placeholder"] = field.help_text
+                field.help_text = ""
+            else:
+                field.widget.attrs["class"] = "form-control"
+            if isinstance(field, forms.DateTimeField):
+                field.widget.attrs["type"] = "datetime-local"
+
+
+class ClientForm(BootstrapMixin, forms.ModelForm):
     """Класс формы клиента"""
 
     class Meta:
-        """Метаданные формы"""
-
         model = Client
         fields = ["full_name", "email", "comments"]
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Добавление стилей в инициализацию"""
-        super(ClientForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update(
-                {
-                    "class": "form-control",
-                    "placeholder": field.help_text,
-                }
-            )
-            field.help_text = ""
 
-
-class MessageForm(forms.ModelForm):
+class MessageForm(BootstrapMixin, forms.ModelForm):
     """Класс формы сообщения"""
 
     class Meta:
-        """Метаданные формы"""
-
         model = Message
         fields = ["theme", "text_message"]
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Добавление стилей в инициализацию"""
-        super(MessageForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update(
-                {
-                    "class": "form-control",
-                    "placeholder": field.help_text,
-                }
-            )
-            field.help_text = ""
 
-
-class MailingForm(forms.ModelForm):
+class MailingForm(BootstrapMixin, forms.ModelForm):
     """Класс формы рассылки"""
 
     class Meta:
-        """Метаданные формы"""
-
         model = Mailing
-        fields = ["message", "clients"]
+        fields = ["date_first_message", "date_end_message", "message", "clients"]
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Добавление стилей в инициализацию"""
-        super(MailingForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.widget.attrs.update(
-                {
-                    "class": "form-control",
-                    "placeholder": field.help_text,
-                }
-            )
-            field.help_text = ""
+
+# Формсет почтовой рассылки
+MailingFormset = inlineformset_factory(Message, Mailing, MailingForm, extra=1)

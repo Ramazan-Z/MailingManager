@@ -1,19 +1,34 @@
 {% extends "mailing_manager/base.html" %}
 
-{% block title %}Редактирование рассылки{% endblock %}
+{% block title %}
+{% if mailing %}
+Редактирование рассылки
+{% else %}
+Создание рассылки
+{% endif %}
+{% endblock %}
 
 {% block content %}
 
 <div class="card mb-4 box-shadow">
     <div class="card-header">
-        <h4 class="my-0 font-weight-normal">Заполните форму</h4>
+        <h4 class="my-0 font-weight-normal">
+            {% if client %}Редактирование рассылки
+            {% else %}Создание рассылки
+            {% endif %}
+        </h4>
     </div>
     <div class="card-body">
         <form method="post" class="form-floating" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Сохранить</button>
-            <a href="{% url 'mailing_manager:mailings_list' %}" class="btn btn-secondary">Отмена</a>
+            <button type="submit" class="btn btn-primary">
+                {% if mailing %}Сохранить
+                {% else %}Создать
+                {% endif %}
+            </button>
+            <a href="{% if mailing %}{% url 'mailing_manager:mailing_detail' mailing.pk %}{% else %}{% url 'mailing_manager:mailings_list' %}{% endif %}"
+                class="btn btn-secondary">Отмена</a>
         </form>
     </div>
 </div>

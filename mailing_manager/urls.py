@@ -1,8 +1,7 @@
 from django.urls import path
 
+from mailing_manager import views
 from mailing_manager.apps import MailingManagerConfig
-
-from . import views
 
 app_name = MailingManagerConfig.name
 

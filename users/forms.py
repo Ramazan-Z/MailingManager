@@ -1,13 +1,13 @@
 from typing import Any
 
-from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.forms import ValidationError
 
+from mailing_manager.forms import BootstrapMixin
 from users.models import CustomUser
 
 
-class CustomUserCreationForm(UserCreationForm):
+class CustomUserCreationForm(BootstrapMixin, UserCreationForm):
     """Класс формы  создания пользователя"""
 
     usable_password = None
@@ -33,25 +33,8 @@ class CustomUserCreationForm(UserCreationForm):
             raise ValidationError("Номер должен состоять только из цифр")
         return phone_number
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Добавление стилей в инициализацию"""
-        super(CustomUserCreationForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            if isinstance(field, forms.BooleanField):
-                field.widget.attrs["class"] = "form-check-input"
-            if "Password" in str(field.label):
-                field.widget.attrs["class"] = "form-control"
-            else:
-                field.widget.attrs.update(
-                    {
-                        "class": "form-control",
-                        "placeholder": field.help_text,
-                    }
-                )
-                field.help_text = ""
 
-
-class UserUpdateForm(UserChangeForm):
+class UserUpdateForm(BootstrapMixin, UserChangeForm):
     """Класс формы редактирования пользователя"""
 
     password = None
@@ -67,18 +50,3 @@ class UserUpdateForm(UserChangeForm):
             "avatar",
             "country",
         )
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        """Добавление стилей в инициализацию"""
-        super(UserUpdateForm, self).__init__(*args, **kwargs)
-        for field in self.fields.values():
-            if isinstance(field, forms.BooleanField):
-                field.widget.attrs["class"] = "form-check-input"
-            else:
-                field.widget.attrs.update(
-                    {
-                        "class": "form-control",
-                        "placeholder": field.help_text,
-                    }
-                )
-                field.help_text = ""
