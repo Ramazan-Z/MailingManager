@@ -45,7 +45,7 @@ class Client(models.Model):
         verbose_name = "Клиент"  # Отображаемое имя в ед. числе
         verbose_name_plural = "Клиенты"  # Отображаемое имя во мн. числе
         ordering = ["full_name"]  # Порядок сортировки
-        permissions = [("can_view_clients", "Может просматривать чужих клиентов")]
+        permissions = [("can_view_other_client", "Может просматривать чужих клиентов")]
 
 
 class Message(models.Model):
@@ -83,7 +83,7 @@ class Message(models.Model):
         verbose_name = "Сообщение"  # Отображаемое имя в ед. числе
         verbose_name_plural = "Сообщения"  # Отображаемое имя во мн. числе
         ordering = ["theme"]  # Порядок сортировки
-        permissions = [("can_view_message", "Может просматривать чужие сообщения")]
+        permissions = [("can_view_other_message", "Может просматривать чужие сообщения")]
 
 
 class Mailing(models.Model):
@@ -160,7 +160,7 @@ class Mailing(models.Model):
         verbose_name_plural = "Рассылки"  # Отображаемое имя во мн. числе
         ordering = ["date_first_message"]  # Порядок сортировки
         permissions = [
-            ("can_view_mailing", "Может просматривать чужие рассылки"),
+            ("can_view_other_mailing", "Может просматривать чужие рассылки"),
             ("can_mailing_blocked", "Может блокировать рассылки"),
         ]
 

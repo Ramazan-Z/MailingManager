@@ -51,14 +51,16 @@
                         Статистика
                     </a>
                 </li>
+                {% if perms.users.can_block_user %}
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center gap-2" href="#">
+                    <a class="nav-link d-flex align-items-center gap-2" href="{% url 'users:users_list' %}">
                         <svg class="bi">
                             <use xlink:href="/static/images/icons.svg#puzzle" />
                         </svg>
-                        Дополнительно
+                        Пользователи сервиса
                     </a>
                 </li>
+                {% endif %}
             </ul>
         </div>
     </div>

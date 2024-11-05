@@ -14,7 +14,9 @@ from users.views import (
     RecoveryPasswordView,
     RegisterView,
     UpdateUserView,
+    UsersListView,
     email_confirm,
+    user_block_unblock,
 )
 
 app_name = UsersConfig.name
@@ -24,9 +26,11 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("register/", RegisterView.as_view(), name="register"),
     path("email_confirm/<str:token>/", email_confirm, name="email_confirm"),
-    path("profile/", ProfileUserView.as_view(), name="profile"),
+    path("profile/<int:pk>/", ProfileUserView.as_view(), name="profile"),
     path("edit/", UpdateUserView.as_view(), name="edit"),
     path("delete/", DeleteUserView.as_view(), name="delete"),
+    path("users_list/", UsersListView.as_view(), name="users_list"),
+    path("user_block/<int:pk>/", user_block_unblock, name="user_block"),
     # Востановление пароля
     path("psw_reset/", RecoveryPasswordView.as_view(), name="psw_reset"),
     path(

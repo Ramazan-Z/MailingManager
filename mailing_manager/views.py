@@ -27,7 +27,7 @@ class ClientsListView(LoginRequiredMixin, ListView):
         """Проверка прав пользователя на просмотр клиентов"""
         queryset = super().get_queryset()
         user = self.request.user
-        if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_view_clients"):
+        if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_view_other_client"):
             return queryset
         return queryset.filter(owner=user)
 
@@ -43,7 +43,7 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
         user = self.request.user
         if (
             hasattr(user, "has_perm")
-            and user.has_perm("mailing_manager.can_view_clients")
+            and user.has_perm("mailing_manager.can_view_other_client")
             or self.object.owner == user
         ):
             return self.object
@@ -111,7 +111,7 @@ class MessagesListView(LoginRequiredMixin, ListView):
         """Проверка прав пользователя на просмотр сообщений"""
         queryset = super().get_queryset()
         user = self.request.user
-        if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_view_messages"):
+        if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_view_other_message"):
             return queryset
         return queryset.filter(owner=user)
 
@@ -127,7 +127,7 @@ class MessageDetailView(LoginRequiredMixin, DetailView):
         user = self.request.user
         if (
             hasattr(user, "has_perm")
-            and user.has_perm("mailing_manager.can_view_messages")
+            and user.has_perm("mailing_manager.can_view_other_message")
             or self.object.owner == user
         ):
             return self.object
@@ -142,11 +142,31 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("mailing_manager:messages_list")
 
     def form_valid(self, form: forms.ClientForm) -> HttpResponse:
-        """Установка текущего пользователя владельцем сообщения"""
-        message = form.save()
-        message.owner = self.request.user
-        message.save()
-        return super().form_valid(form)
+        """Сохранение формсета с установкой владельца"""
+        context_data = self.get_context_data()
+        formset = context_data["formset"]
+        if form.is_valid() and formset.is_valid():
+            self.object = form.save()
+            # Установка владельца сообщения
+            self.object.owner = self.request.user
+            formset.instance = self.object
+            mailing_lst = formset.save()
+            # Установка владельца связанной рассылки
+            for mailing in mailing_lst:
+                mailing.owner = self.request.user
+                mailing.save()
+            return super().form_valid(form)
+        else:
+            return self.render_to_response(self.get_context_data(form=form, formset=formset))
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Добавление формсета в шаблонные переменные"""
+        context = super().get_context_data(**kwargs)
+        if self.request.method == "POST":
+            context["formset"] = forms.MailingFormset(self.request.POST, instance=self.object)
+        else:
+            context["formset"] = forms.MailingFormset(instance=self.object)
+        return context
 
 
 class MessageUpdateView(LoginRequiredMixin, UpdateView):
@@ -195,7 +215,7 @@ class MailingsListView(LoginRequiredMixin, ListView):
         """Проверка прав пользователя на просмотр рассылок"""
         queryset = super().get_queryset()
         user = self.request.user
-        if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_view_mailing"):
+        if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_view_other_mailing"):
             return queryset
         return queryset.filter(owner=user)
 
@@ -211,7 +231,7 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
         user = self.request.user
         if (
             hasattr(user, "has_perm")
-            and user.has_perm("mailing_manager.can_view_mailing")
+            and user.has_perm("mailing_manager.can_view_other_mailing")
             or self.object.owner == user
         ):
             return self.object

@@ -16,7 +16,7 @@
             {% if user.is_authenticated %}
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow">
                 <li>
-                    <a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a>
+                    <a class="dropdown-item" href="{% url 'users:profile' user.pk %}">Мой профиль</a>
                 </li>
                 <li>
                     <hr class="dropdown-divider">

@@ -31,7 +31,7 @@
                 Зарегистрировать
                 {% endif %}
             </button>
-            <a href="{% if user_obj %}{% url 'users:profile' %}{% else %}{% url 'mailing_manager:home' %}{% endif %}"
+            <a href="{% if user_obj %}{% url 'users:profile' user.pk %}{% else %}{% url 'mailing_manager:home' %}{% endif %}"
                 class="btn btn-secondary">
                 Отмена
             </a>

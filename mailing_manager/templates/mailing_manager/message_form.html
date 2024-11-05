@@ -1,7 +1,7 @@
 {% extends "mailing_manager/base.html" %}
 
 {% block title %}
-{% if client %}
+{% if message %}
 Редактирование сообщения
 {% else %}
 Создание сообщения
@@ -13,7 +13,7 @@
 <div class="card mb-4 box-shadow">
     <div class="card-header">
         <h4 class="my-0 font-weight-normal">
-            {% if client %}Редактирование сообщения
+            {% if message %}Редактирование сообщения
             {% else %}Создание сообщения
             {% endif %}
         </h4>
@@ -22,8 +22,12 @@
         <form method="post" class="form-floating" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+            {{ formset.management_form }}
+            {% for form in formset.forms %}
+            {{ form.as_p }}
+            {% endfor %}
             <button type="submit" class="btn btn-primary">
-                {% if client %}Сохранить
+                {% if message %}Сохранить
                 {% else %}Создать
                 {% endif %}
             </button>

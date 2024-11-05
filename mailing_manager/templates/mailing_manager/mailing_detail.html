@@ -12,9 +12,11 @@
     <div class="card-body">
         <ul class="list-group list-group-flush">
             <li class="list-group-item">Дата и время первой отправки:
-                {{ mailing.date_first_message | date:"d.M.Y h:m:s" }}</li>
+                {{ mailing.date_first_message | date:"d.M.Y h:m:s" }}
+            </li>
             <li class="list-group-item"> Дата и время окинчания отправки:
-                {{ mailing.date_end_message | date:"d.M.Y h:m:s" }}</li>
+                {{ mailing.date_end_message | date:"d.M.Y h:m:s" }}
+            </li>
             <li class="list-group-item">Тема сообщения: {{ mailing.message }}</li>
             <li class="list-group-item">Статус: {{ mailing.get_status_display }}</li>
             <li class="list-group-item">Получатели:
