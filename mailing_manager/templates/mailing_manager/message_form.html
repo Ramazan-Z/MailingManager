@@ -22,6 +22,7 @@
         <form method="post" class="form-floating" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
+            <hr>
             {{ formset.management_form }}
             {% for form in formset.forms %}
             {{ form.as_p }}

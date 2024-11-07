@@ -7,6 +7,7 @@ app_name = MailingManagerConfig.name
 
 urlpatterns = [
     path("", views.HomeTemplateView.as_view(), name="home"),
+    path("attempts/", views.AttemptsListView.as_view(), name="attempts"),
     path("clients_list/", views.ClientsListView.as_view(), name="clients_list"),
     path("client_detail/<int:pk>/", views.ClientDetailView.as_view(), name="client_detail"),
     path("client_add", views.ClientCreateView.as_view(), name="client_add"),
@@ -22,4 +23,6 @@ urlpatterns = [
     path("mailing_add", views.MailingCreateView.as_view(), name="mailing_add"),
     path("mailing_edit/<int:pk>/", views.MailingUpdateView.as_view(), name="mailing_edit"),
     path("mailing_delete/<int:pk>/", views.MailingDeleteView.as_view(), name="mailing_delete"),
+    path("mailing_start/<int:pk>/", views.mailing_start, name="mailing_start"),
+    path("mailing_block/<int:pk>/", views.mailing_block_unblock, name="mailing_block"),
 ]

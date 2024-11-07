@@ -6,8 +6,27 @@
 
 <!--mailing info-->
 <div class="card mt-4">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between">
         <h2 class="card-title">Информация о рассылке</h2>
+        {% if perms.mailing_manager.can_mailing_blocked and mailing.owner != user %}
+        <a href="{% url 'mailing_manager:mailing_block' mailing.pk %}"
+            class="{% if mailing.is_blocked %}btn btn-primary{% else %}btn btn-danger{% endif %}">
+            {% if mailing.is_blocked %}
+            Разблокировать
+            {% else %}
+            Заблокировать
+            {% endif %}
+        </a>
+        {% else %}
+        <a href="{% url 'mailing_manager:mailing_start' mailing.pk %}"
+            class="btn btn-primary {% if mailing.is_blocked %}disabled{% endif %}">
+            {% if mailing.status == "created" %}
+            Отправить
+            {% else %}
+            Отправить еще раз
+            {% endif %}
+        </a>
+        {% endif %}
     </div>
     <div class="card-body">
         <ul class="list-group list-group-flush">

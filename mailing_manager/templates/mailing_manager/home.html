@@ -4,4 +4,38 @@
 
 {% block content %}
 
+<div class="text-center">
+    <h3 class="title">
+        Добро пожаловать на сервис почтовых рассылок
+    </h3>
+</div>
+{% if user.is_authenticated %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h2 class="card-title">Сводная информация</h2>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Всего клиентов: {{ clients_count }}</li>
+            <li class="list-group-item">Всего рассылок: {{ mailings_count }}</li>
+            <li class="list-group-item">Активных рассылок: {{ active_mailings_count }}</li>
+            <li class="list-group-item">Завершенных рассылок: {{ completed_mailings_count }}</li>
+        </ul>
+    </div>
+    <div class="card-footer">
+    </div>
+</div>
+{% else %}
+<p class="h4">
+    <a href="{% url 'users:login' %}">
+        Войдите
+    </a>
+    или
+    <a href="{% url 'users:register' %}">
+        Зарегистрируйтесь
+    </a>
+    для использования сервиса.
+</p>
+{% endif %}
+
 {% endblock %}

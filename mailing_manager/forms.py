@@ -24,8 +24,6 @@ class BootstrapMixin:
                 field.help_text = ""
             else:
                 field.widget.attrs["class"] = "form-control"
-            if isinstance(field, forms.DateTimeField):
-                field.widget.attrs["type"] = "datetime-local"
 
 
 class ClientForm(BootstrapMixin, forms.ModelForm):
@@ -49,7 +47,7 @@ class MailingForm(BootstrapMixin, forms.ModelForm):
 
     class Meta:
         model = Mailing
-        fields = ["date_first_message", "date_end_message", "message", "clients"]
+        fields = ["message", "clients"]
 
 
 # Формсет почтовой рассылки

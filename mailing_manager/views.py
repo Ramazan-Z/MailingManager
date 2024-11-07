@@ -4,18 +4,53 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models.query import QuerySet
 from django.forms.models import ModelFormMetaclass
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from mailing_manager import forms, models
+from mailing_manager.services import MailingLauncher
 
 
 class HomeTemplateView(TemplateView):
     """Контроллер домашней страницы"""
 
     template_name = "mailing_manager/home.html"
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Добавление переменных в шаблон главной страницы"""
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        if user.is_authenticated:
+            clients = models.Client.objects.filter(owner=user)
+            mailings = models.Mailing.objects.filter(owner=user)
+            context["clients_count"] = clients.count()
+            context["mailings_count"] = mailings.count()
+            context["active_mailings_count"] = mailings.filter(status="running").count()
+            context["completed_mailings_count"] = mailings.filter(status="completed").count()
+        return context
+
+
+class AttemptsListView(LoginRequiredMixin, ListView):
+    """Контроллер страницы статистики"""
+
+    model = models.MailingAttempt
+
+    def get_queryset(self) -> Any:
+        """Проверка прав пользователя на просмотр попыток рассылки"""
+        queryset = super().get_queryset()
+        return queryset.filter(owner=self.request.user)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Добавление переменных в шаблон страницы статистики"""
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        context["attempts_count"] = queryset.count()
+        context["attempts_success_count"] = queryset.filter(status="successful").count()
+        context["attempts_error_count"] = queryset.filter(status="not_successful").count()
+        return context
 
 
 class ClientsListView(LoginRequiredMixin, ListView):
@@ -39,14 +74,14 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset: QuerySet[Any, Any] | None = None) -> Any:
         """Проверка прав пользователя на просмотр клиента"""
-        self.object = super().get_object(queryset)
+        client = super().get_object(queryset)
         user = self.request.user
         if (
             hasattr(user, "has_perm")
             and user.has_perm("mailing_manager.can_view_other_client")
-            or self.object.owner == user
+            or client.owner == user
         ):
-            return self.object
+            return client
         raise PermissionDenied
 
 
@@ -88,9 +123,9 @@ class ClientDeleteView(DeleteView):
 
     def get_object(self, queryset: QuerySet[Any, Any] | None = None) -> Any:
         """Ограничение удаления клиента только владельцу"""
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner:
-            return self.object
+        client = super().get_object(queryset)
+        if self.request.user == client.owner:
+            return client
         raise PermissionDenied
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -123,14 +158,14 @@ class MessageDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset: QuerySet[Any, Any] | None = None) -> Any:
         """Проверка прав пользователя на просмотр сообщения"""
-        self.object = super().get_object(queryset)
+        message = super().get_object(queryset)
         user = self.request.user
         if (
             hasattr(user, "has_perm")
             and user.has_perm("mailing_manager.can_view_other_message")
-            or self.object.owner == user
+            or message.owner == user
         ):
-            return self.object
+            return message
         raise PermissionDenied
 
 
@@ -146,10 +181,10 @@ class MessageCreateView(LoginRequiredMixin, CreateView):
         context_data = self.get_context_data()
         formset = context_data["formset"]
         if form.is_valid() and formset.is_valid():
-            self.object = form.save()
+            message = form.save()
             # Установка владельца сообщения
-            self.object.owner = self.request.user
-            formset.instance = self.object
+            message.owner = self.request.user
+            formset.instance = message
             mailing_lst = formset.save()
             # Установка владельца связанной рассылки
             for mailing in mailing_lst:
@@ -192,9 +227,9 @@ class MessageDeleteView(DeleteView):
 
     def get_object(self, queryset: QuerySet[Any, Any] | None = None) -> Any:
         """Ограничение удаления сообщения только владельцу"""
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner:
-            return self.object
+        message = super().get_object(queryset)
+        if self.request.user == message.owner:
+            return message
         raise PermissionDenied
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -227,14 +262,14 @@ class MailingDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset: QuerySet[Any, Any] | None = None) -> Any:
         """Проверка прав пользователя на просмотр рассылки"""
-        self.object = super().get_object(queryset)
+        mailing = super().get_object(queryset)
         user = self.request.user
         if (
             hasattr(user, "has_perm")
             and user.has_perm("mailing_manager.can_view_other_mailing")
-            or self.object.owner == user
+            or mailing.owner == user
         ):
-            return self.object
+            return mailing
         raise PermissionDenied
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -282,9 +317,9 @@ class MailingDeleteView(DeleteView):
 
     def get_object(self, queryset: QuerySet[Any, Any] | None = None) -> Any:
         """Ограничение удаления рассылки только владельцу"""
-        self.object = super().get_object(queryset)
-        if self.request.user == self.object.owner:
-            return self.object
+        mailing = super().get_object(queryset)
+        if self.request.user == mailing.owner:
+            return mailing
         raise PermissionDenied
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -294,3 +329,22 @@ class MailingDeleteView(DeleteView):
         context["question"] = f"Вы уверены что хотите удалить рассылку «{self.object}»?"
         context["back"] = reverse_lazy("mailing_manager:mailing_detail", args=[self.kwargs.get("pk")])
         return context
+
+
+def mailing_block_unblock(request: HttpRequest, pk: int) -> HttpResponse:
+    """Контроллер страницы блокировки рассылки"""
+    user = request.user
+    mailing = get_object_or_404(models.Mailing, pk=pk)
+    if hasattr(user, "has_perm") and user.has_perm("mailing_manager.can_mailing_blocked"):
+        mailing.is_blocked = not mailing.is_blocked
+        mailing.save()
+    return redirect(reverse_lazy("mailing_manager:mailings_list"))
+
+
+def mailing_start(request: HttpRequest, pk: int) -> HttpResponse:
+    """Контроллер страницы запуска рассылки"""
+    mailing = get_object_or_404(models.Mailing, pk=pk)
+    if mailing.owner == request.user and not mailing.is_blocked:
+        mailing_launcher = MailingLauncher(mailing)
+        mailing_launcher.to_run()
+    return redirect(reverse_lazy("mailing_manager:mailings_list"))
