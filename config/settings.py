@@ -135,3 +135,6 @@ if CACH_ENABLED:
             "LOCATION": os.getenv("LOCATION"),
         }
     }
+
+# Время кэширования
+CACH_TIME = 30
