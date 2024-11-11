@@ -1,0 +1,24 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+
+<div class="card mt-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Вход в систему</h4>
+    </div>
+    <div class="card-body">
+        <form method="post" class="form-floating">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Войти</button>
+            <a href="{% url 'mailing_manager:home' %}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'users:psw_reset' %}" class="link-primary">Забыли пароль?</a>
+    </div>
+</div>
+
+{% endblock %}

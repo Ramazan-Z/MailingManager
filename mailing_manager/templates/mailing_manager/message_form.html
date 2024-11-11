@@ -1,0 +1,41 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}
+{% if message %}
+Редактирование сообщения
+{% else %}
+Создание сообщения
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="card mb-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal">
+            {% if message %}Редактирование сообщения
+            {% else %}Создание сообщения
+            {% endif %}
+        </h4>
+    </div>
+    <div class="card-body">
+        <form method="post" class="form-floating" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <hr>
+            {{ formset.management_form }}
+            {% for form in formset.forms %}
+            {{ form.as_p }}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">
+                {% if message %}Сохранить
+                {% else %}Создать
+                {% endif %}
+            </button>
+            <a href="{% if message %}{% url 'mailing_manager:message_detail' message.pk %}{% else %}{% url 'mailing_manager:messages_list' %}{% endif %}"
+                class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

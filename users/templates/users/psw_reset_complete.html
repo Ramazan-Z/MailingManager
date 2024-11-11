@@ -1,0 +1,19 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Вход в систему{% endblock %}
+
+{% block content %}
+
+<div class="card mt-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal">Вход в систему</h4>
+    </div>
+    <div class="card-body">
+        <p>Ваш пароль установлен. Теперь вы можете войти в систему.</p>
+    </div>
+    <div class="card-footer">
+        <a href="{% url 'users:login' %}" class="btn btn-primary">Авторизоваться</a>
+    </div>
+</div>
+
+{% endblock %}

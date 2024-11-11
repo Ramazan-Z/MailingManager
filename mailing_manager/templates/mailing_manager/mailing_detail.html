@@ -1,0 +1,67 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Информация о рассылке{% endblock %}
+
+{% block content %}
+
+<!--mailing info-->
+<div class="card mt-4">
+    <div class="card-header d-flex justify-content-between">
+        <h2 class="card-title">Информация о рассылке</h2>
+        {% if perms.mailing_manager.can_mailing_blocked and mailing.owner != user %}
+        <a href="{% url 'mailing_manager:mailing_block' mailing.pk %}"
+            class="{% if mailing.is_blocked %}btn btn-primary{% else %}btn btn-danger{% endif %}">
+            {% if mailing.is_blocked %}
+            Разблокировать
+            {% else %}
+            Заблокировать
+            {% endif %}
+        </a>
+        {% else %}
+        <a href="{% url 'mailing_manager:mailing_start' mailing.pk %}"
+            class="btn btn-primary {% if mailing.is_blocked %}disabled{% endif %}">
+            {% if mailing.status == "created" %}
+            Отправить
+            {% else %}
+            Отправить еще раз
+            {% endif %}
+        </a>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Дата и время первой отправки:
+                {{ mailing.date_first_message | date:"d.M.Y h:m:s" }}
+            </li>
+            <li class="list-group-item"> Дата и время окинчания отправки:
+                {{ mailing.date_end_message | date:"d.M.Y h:m:s" }}
+            </li>
+            <li class="list-group-item">Тема сообщения: {{ mailing.message }}</li>
+            <li class="list-group-item">Статус: {{ mailing.get_status_display }}</li>
+            <li class="list-group-item">Получатели:
+                <ul class="list-group list-group-flush">
+                    {% for client in clients %}
+                    <li class="list-group-item">{{ client.full_name }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <div class="card-footer">
+        <div class="btn-group">
+            {% if mailing.owner == user %}
+            <a href="{% url 'mailing_manager:mailing_edit'  mailing.pk %}" class="btn btn-primary">
+                Редактировать
+            </a>
+            <a href="{% url 'mailing_manager:mailing_delete' mailing.pk %}" class="btn btn-danger">
+                Удалить
+            </a>
+            {% endif %}
+            <a href="{% url 'mailing_manager:mailings_list' %}" class="btn btn-secondary">
+                Назад
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

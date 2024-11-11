@@ -1,0 +1,36 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Информация о клиенте{% endblock %}
+
+{% block content %}
+
+<!--client info-->
+<div class="card mt-4">
+    <div class="card-header">
+        <h2 class="card-title">Информация о клиенте</h2>
+    </div>
+    <div class="card-body">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">Ф.И.О.: {{ client.full_name }}</li>
+            <li class="list-group-item">Email: {{ client.email }}</li>
+            <li class="list-group-item">Коментарий: {{ client.comments }}</li>
+        </ul>
+    </div>
+    <div class="card-footer">
+        <div class="btn-group">
+            {% if client.owner == user %}
+            <a href="{% url 'mailing_manager:client_edit'  client.pk %}" class="btn btn-primary">
+                Редактировать
+            </a>
+            <a href="{% url 'mailing_manager:client_delete' client.pk %}" class="btn btn-danger">
+                Удалить
+            </a>
+            {% endif %}
+            <a href="{% url 'mailing_manager:clients_list' %}" class="btn btn-secondary">
+                Назад
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

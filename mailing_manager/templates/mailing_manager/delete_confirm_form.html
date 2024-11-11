@@ -1,0 +1,22 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+
+<div class="card mt-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal">{{ title }}</h4>
+    </div>
+    <div class="card-body">
+        <p>{{ question }}</p>
+        <form method="post" class="form-floating">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-danger">Удалить</button>
+            <a href="{{ back }}" class="btn btn-secondary">Отмена</a>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

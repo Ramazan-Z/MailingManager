@@ -1,0 +1,3 @@
+{% load i18n %}{% autoescape off %}
+{% blocktranslate %}Востановление пароля на сайте {{ site_name }}{% endblocktranslate %}
+{% endautoescape %}

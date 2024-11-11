@@ -1,0 +1,70 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}
+{% if user_obj %}
+Редактирование профиля
+{% else %}
+Регистрация
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<div class="card mt-4 box-shadow">
+    <div class="card-header">
+        <h4 class="my-0 font-weight-normal">
+            {% if user_obj %}
+            Редактирование профиля
+            {% else %}
+            Регистрация
+            {% endif %}
+        </h4>
+    </div>
+    <div class="card-body">
+        <form method="post" class="form-floating" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">
+                {% if user_obj %}
+                Сохранить
+                {% else %}
+                Зарегистрировать
+                {% endif %}
+            </button>
+            <a href="{% if user_obj %}{% url 'users:profile' user.pk %}{% else %}{% url 'mailing_manager:home' %}{% endif %}"
+                class="btn btn-secondary">
+                Отмена
+            </a>
+        </form>
+    </div>
+    {% if user_obj %}
+    <div class="card-footer d-flex justify-content-end">
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#DeleteUser">
+            Удалить аккаунт
+        </button>
+    </div>
+    {% endif %}
+</div>
+<!--modal-->
+<div class="modal fade" id="DeleteUser" tabindex="-1" aria-labelledby="DeleteUserLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="DeleteModalLabel">Удаление Аккаунта</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить аккаунт "{{ user.username }}"?</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" action="{% url 'users:delete' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "mailing_manager/base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+
+{% load my_tag %}
+
+<!--user profile-->
+<div class="card-group mt-4">
+    <div class="card">
+        <img src="{{ customuser.avatar | media_filter }}" class="rounded-circle m-2" alt="avatar">
+        <div class="card-footer">
+            {% if customuser == user %}
+            <a class="btn btn-primary" href="{% url 'users:edit' %}">Изменить профиль</a>
+            {% else %}
+            {% if customuser.is_active %}
+            <a class="btn btn-danger" href="{% url 'users:user_block' customuser.pk %}">Заблокировать</a>
+            {% else %}
+            <a class="btn btn-primary" href="{% url 'users:user_block' customuser.pk %}">Разблокировать</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">{% if customuser == user %}Мой профиль{% else %}Профиль пользователя{% endif %}</h4>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Ник: {{ customuser.username }}</li>
+                <li class="list-group-item">Email: {{ customuser.email }}</li>
+                <li class="list-group-item">Имя: {{ customuser.first_name }}</li>
+                <li class="list-group-item">Фамилия: {{ customuser.last_name }}</li>
+                <li class="list-group-item">Телефон: {{ customuser.phone_number }}</li>
+                <li class="list-group-item">Страна: {{ customuser.country }}</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

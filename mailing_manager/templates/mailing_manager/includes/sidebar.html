@@ -1,0 +1,67 @@
+<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+    <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
+        aria-labelledby="sidebarMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="sidebarMenuLabel">Менеджер рассылок</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarMenu"
+                aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
+                        href="{% url 'mailing_manager:home' %}">
+                        <svg class="bi">
+                            <use xlink:href="/static/images/icons.svg#house-fill" />
+                        </svg>
+                        Главная
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2" href="{% url 'mailing_manager:clients_list' %}">
+                        <svg class="bi">
+                            <use xlink:href="/static/images/icons.svg#people" />
+                        </svg>
+                        Клиенты
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2"
+                        href="{% url 'mailing_manager:messages_list' %}">
+                        <svg class="bi">
+                            <use xlink:href="/static/images/icons.svg#file-earmark-text" />
+                        </svg>
+                        Сообщения
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2"
+                        href="{% url 'mailing_manager:mailings_list' %}">
+                        <svg class="bi">
+                            <use xlink:href="/static/images/icons.svg#file-earmark" />
+                        </svg>
+                        Рассылки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2" href="{% url 'mailing_manager:attempts' %}">
+                        <svg class="bi">
+                            <use xlink:href="/static/images/icons.svg#graph-up" />
+                        </svg>
+                        Статистика
+                    </a>
+                </li>
+                {% if perms.users.can_block_user %}
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2" href="{% url 'users:users_list' %}">
+                        <svg class="bi">
+                            <use xlink:href="/static/images/icons.svg#puzzle" />
+                        </svg>
+                        Пользователи сервиса
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,163 @@
+[
+{
+    "model": "mailing_manager.client",
+    "pk": 1,
+    "fields": {
+        "email": "Ivanov_ivan@sky.pro",
+        "full_name": "Иванов Иван Иванович",
+        "comments": "Страхование жизни",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.client",
+    "pk": 2,
+    "fields": {
+        "email": "Petr_petrov@sky.pro",
+        "full_name": "Петров Петр Петрович",
+        "comments": "КАСКО",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.client",
+    "pk": 3,
+    "fields": {
+        "email": "Sidor_sidorov@sky.pro",
+        "full_name": "Сидоров Сидор Сидорович",
+        "comments": "Страхование имущетва",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.client",
+    "pk": 4,
+    "fields": {
+        "email": "Ramazan_zalilov@mail.ru",
+        "full_name": "Залилов Рамазан Расилевич",
+        "comments": "ОСАГО",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.message",
+    "pk": 1,
+    "fields": {
+        "theme": "Извещение",
+        "text_message": "Уведомление об истечении срока страхового полиса.",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.message",
+    "pk": 2,
+    "fields": {
+        "theme": "Счет на оплату",
+        "text_message": "Реквизиты платежа: .......................",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.message",
+    "pk": 3,
+    "fields": {
+        "theme": "Реклама",
+        "text_message": "Расказ о новинках.",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.message",
+    "pk": 4,
+    "fields": {
+        "theme": "Заявление",
+        "text_message": "Какой-то документ",
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.mailing",
+    "pk": 1,
+    "fields": {
+        "date_first_message": null,
+        "date_end_message": null,
+        "message": 1,
+        "status": "created",
+        "is_blocked": true,
+        "owner": 3,
+        "clients": [
+            1
+        ]
+    }
+},
+{
+    "model": "mailing_manager.mailing",
+    "pk": 2,
+    "fields": {
+        "date_first_message": "2024-11-07T14:40:19.377Z",
+        "date_end_message": null,
+        "message": 2,
+        "status": "running",
+        "is_blocked": false,
+        "owner": 3,
+        "clients": [
+            2
+        ]
+    }
+},
+{
+    "model": "mailing_manager.mailing",
+    "pk": 3,
+    "fields": {
+        "date_first_message": "2024-11-07T14:39:35.260Z",
+        "date_end_message": "2024-11-07T14:39:41.460Z",
+        "message": 3,
+        "status": "completed",
+        "is_blocked": false,
+        "owner": 3,
+        "clients": [
+            4,
+            1,
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "mailing_manager.mailing",
+    "pk": 4,
+    "fields": {
+        "date_first_message": null,
+        "date_end_message": null,
+        "message": 4,
+        "status": "created",
+        "is_blocked": false,
+        "owner": 3,
+        "clients": [
+            3
+        ]
+    }
+},
+{
+    "model": "mailing_manager.mailingattempt",
+    "pk": 1,
+    "fields": {
+        "date_attempt": "2024-11-07T14:39:41.464Z",
+        "status": "successful",
+        "server_response": "Сообщение успешно отправлено",
+        "mailing": 3,
+        "owner": 3
+    }
+},
+{
+    "model": "mailing_manager.mailingattempt",
+    "pk": 2,
+    "fields": {
+        "date_attempt": "2024-11-07T14:40:19.405Z",
+        "status": "not_successful",
+        "server_response": "Ошибка отправки сообщения: [Errno 7] No address associated with hostname",
+        "mailing": 2,
+        "owner": 3
+    }
+}
+]
